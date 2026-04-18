@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Tajawal:wght@400;500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   LYCÉE TECHNIQUE LALLA KHADIJA — Cinematic Design System
+   Light = Alabaster (Apple Lab)  |  Dark = Obsidian (Neon Lab)
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Alabaster — High-key Apple Lab */
+    --background: 40 20% 98%;
+    --foreground: 220 25% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 200 95% 65%;
+
+    --secondary: 220 15% 94%;
+    --secondary-foreground: 220 25% 15%;
+
+    --muted: 220 15% 94%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 195 90% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 88%;
+    --input: 220 15% 90%;
+    --ring: 220 90% 56%;
+
+    --radius: 1rem;
+
+    /* Bespoke */
+    --silver: 220 10% 75%;
+    --metal: 220 8% 60%;
+    --void: 220 30% 98%;
+    --glow: 195 90% 55%;
+
+    --glass-bg: 0 0% 100% / 0.55;
+    --glass-border: 220 30% 90% / 0.6;
+    --glass-blur: 20px;
+
+    --grad-hero: radial-gradient(ellipse at top, hsl(220 90% 96%) 0%, hsl(40 20% 98%) 50%, hsl(220 30% 95%) 100%);
+    --grad-primary: linear-gradient(135deg, hsl(220 90% 56%), hsl(195 95% 60%));
+    --grad-text: linear-gradient(135deg, hsl(220 30% 15%), hsl(220 90% 40%));
+    --grad-metal: linear-gradient(135deg, hsl(220 15% 92%), hsl(220 8% 70%));
+
+    --shadow-soft: 0 1px 2px hsl(220 30% 50% / 0.06), 0 8px 24px hsl(220 30% 50% / 0.08);
+    --shadow-elev: 0 2px 4px hsl(220 30% 30% / 0.08), 0 24px 60px hsl(220 30% 30% / 0.12);
+    --shadow-glow: 0 0 60px hsl(195 90% 55% / 0.25);
+
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-cinema: cubic-bezier(0.7, 0, 0.3, 1);
+  }
+
+  .dark {
+    /* Obsidian — Deep void neon */
+    --background: 222 40% 4%;
+    --foreground: 200 30% 96%;
+
+    --card: 222 35% 7%;
+    --card-foreground: 200 30% 96%;
+
+    --popover: 222 35% 8%;
+    --popover-foreground: 200 30% 96%;
+
+    --primary: 195 100% 60%;
+    --primary-foreground: 222 40% 4%;
+    --primary-glow: 190 100% 70%;
+
+    --secondary: 222 30% 12%;
+    --secondary-foreground: 200 30% 96%;
+
+    --muted: 222 30% 12%;
+    --muted-foreground: 220 15% 60%;
+
+    --accent: 190 100% 55%;
+    --accent-foreground: 222 40% 4%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 30% 16%;
+    --input: 222 30% 14%;
+    --ring: 195 100% 60%;
+
+    --silver: 220 10% 35%;
+    --metal: 220 8% 50%;
+    --void: 222 50% 2%;
+    --glow: 195 100% 60%;
+
+    --glass-bg: 222 30% 10% / 0.4;
+    --glass-border: 195 100% 60% / 0.15;
+    --glass-blur: 24px;
+
+    --grad-hero: radial-gradient(ellipse at top, hsl(220 60% 12%) 0%, hsl(222 40% 4%) 60%, hsl(222 50% 2%) 100%);
+    --grad-primary: linear-gradient(135deg, hsl(195 100% 55%), hsl(220 100% 65%));
+    --grad-text: linear-gradient(135deg, hsl(200 30% 96%), hsl(195 100% 70%));
+    --grad-metal: linear-gradient(135deg, hsl(222 30% 18%), hsl(220 10% 35%));
+
+    --shadow-soft: 0 1px 2px hsl(0 0% 0% / 0.3), 0 8px 24px hsl(0 0% 0% / 0.4);
+    --shadow-elev: 0 2px 4px hsl(0 0% 0% / 0.4), 0 24px 60px hsl(195 100% 50% / 0.15);
+    --shadow-glow: 0 0 80px hsl(195 100% 60% / 0.5);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html, body, #root { @apply min-h-screen; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--grad-hero);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+
+  /* ============================================================
+     ARABIC / RTL — Tajawal everywhere, zero letter-spacing,
+     ligature-friendly font features, cinematic glow.
+     ============================================================ */
+  [dir="rtl"],
+  [dir="rtl"] body,
+  [dir="rtl"] p,
+  [dir="rtl"] span,
+  [dir="rtl"] a,
+  [dir="rtl"] button,
+  [dir="rtl"] input,
+  [dir="rtl"] textarea,
+  [dir="rtl"] li,
+  [dir="rtl"] div {
+    font-family: 'Tajawal', 'Inter', system-ui, sans-serif;
+  }
+
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4,
+  [dir="rtl"] h5,
+  [dir="rtl"] h6,
+  .arabic-heading {
+    font-family: 'Tajawal', sans-serif !important;
+    direction: rtl !important;
+    text-align: right !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0.05em;
+    font-feature-settings: "rlig" 1, "calt" 1, "liga" 1, "ss01" 1;
+    text-rendering: optimizeLegibility;
+    font-weight: 800;
+    text-shadow: 0 0 32px hsl(var(--primary) / 0.35), 0 0 4px hsl(var(--primary) / 0.15);
+  }
+
+  /* Kill any inherited tracking utilities on RTL text */
+  [dir="rtl"] .tracking-tight,
+  [dir="rtl"] .tracking-tighter,
+  [dir="rtl"] .tracking-wide,
+  [dir="rtl"] .tracking-wider,
+  [dir="rtl"] .tracking-widest,
+  [dir="rtl"] [class*="tracking-["] {
+    letter-spacing: 0 !important;
+  }
+
+  [dir="rtl"] .font-mono {
+    font-family: 'Tajawal', monospace !important;
+    letter-spacing: 0.15em;
+  }
+
+  /* Gradient text fills glyph correctly in RTL */
+  [dir="rtl"] .text-grad,
+  [dir="rtl"] .text-grad-primary {
+    background-size: 100% 100%;
+    background-position: right center;
+  }
+
+  ::selection { background: hsl(var(--primary) / 0.25); color: hsl(var(--foreground)); }
+
+  /* Theme transition reveal */
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+  ::view-transition-old(root) { z-index: 1; }
+  ::view-transition-new(root) { z-index: 9999; }
+}
+
+@layer components {
+  .glass {
+    background: hsla(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    border: 1px solid hsla(var(--glass-border));
+    box-shadow: var(--shadow-soft);
+  }
+  .glass-strong {
+    background: hsla(var(--glass-bg));
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid hsla(var(--glass-border));
+    box-shadow: var(--shadow-elev);
+  }
+  .text-grad {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-grad-primary {
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glow-ring { box-shadow: var(--shadow-glow); }
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.4s var(--ease-spring), box-shadow 0.4s ease;
+    will-change: transform;
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+}
+
+@layer utilities {
+  .perspective-1000 { perspective: 1000px; }
+  .preserve-3d { transform-style: preserve-3d; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
+
+/* Keyframes */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 hsl(142 70% 45% / 0.6); }
+  70% { box-shadow: 0 0 0 24px hsl(142 70% 45% / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(142 70% 45% / 0); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes letter-pop {
+  0% { opacity: 0; transform: translateY(40px) rotateX(-90deg); }
+  100% { opacity: 1; transform: translateY(0) rotateX(0); }
+}
+@keyframes radial-reveal {
+  from { clip-path: circle(0% at var(--cx, 50%) var(--cy, 50%)); }
+  to { clip-path: circle(150% at var(--cx, 50%) var(--cy, 50%)); }
+}
