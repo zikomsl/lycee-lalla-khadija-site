@@ -46,7 +46,7 @@ export const FacebookButton = () => {
       aria-label="Follow us on Facebook"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`fixed bottom-[5.75rem] z-50 ${dir === "rtl" ? "left-6" : "right-6"} group block h-14 w-14`}
+      className={`fixed bottom-[5.75rem] z-10 ${dir === "rtl" ? "left-6" : "right-6"} group block h-14 w-14`}
     >
       <motion.span
         style={{ x, y }}
@@ -55,7 +55,6 @@ export const FacebookButton = () => {
         transition={{ delay: 1.4, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
         className="pointer-events-none relative block h-full w-full"
       >
-        {/* Pulsing cyan glow */}
         <motion.span
           aria-hidden
           className="absolute inset-0 rounded-full bg-[hsl(190_95%_55%)] blur-xl"
@@ -69,7 +68,6 @@ export const FacebookButton = () => {
             ease: "easeInOut",
           }}
         />
-        {/* Ring */}
         <span className="absolute inset-0 rounded-full ring-1 ring-[hsl(190_95%_65%)]/40" />
 
         <motion.span
@@ -80,7 +78,6 @@ export const FacebookButton = () => {
           <Facebook className="h-6 w-6 text-white" strokeWidth={2.2} />
         </motion.span>
 
-        {/* Tooltip */}
         <motion.span
           initial={false}
           animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : 8 }}

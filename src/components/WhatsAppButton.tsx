@@ -15,7 +15,7 @@ export const WhatsAppButton = () => {
       transition={{ delay: 1.2, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.92 }}
-      className={`fixed bottom-6 z-50 ${dir === "rtl" ? "left-6" : "right-6"} group`}
+      className={`fixed bottom-6 z-10 ${dir === "rtl" ? "left-6" : "right-6"} group`}
     >
       <span className="absolute inset-0 rounded-full animate-pulse-ring" />
       <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[hsl(142_70%_45%)] shadow-elev">

@@ -5,7 +5,7 @@ import { useApp } from "@/contexts/AppContext";
 
 export const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { theme, toggleTheme, lang, t } = useApp();
+  const { theme, toggleTheme, lang, setLang, t } = useApp();
 
   useEffect(() => {
     if (isOpen) {
@@ -22,6 +22,11 @@ export const MobileNav = () => {
     { name: t("nav_contact"), icon: <Phone size={24} />, href: '#contact' },
   ];
 
+  const handleLangToggle = () => {
+    const nextLang = lang === 'fr' ? 'ar' : lang === 'ar' ? 'en' : 'fr';
+    setLang(nextLang);
+  };
+
   return (
     <div className="lg:hidden">
       <button
@@ -34,57 +39,62 @@ export const MobileNav = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[10000] bg-background flex flex-col p-6 h-screen w-screen overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex flex-col bg-background p-6 h-screen w-screen overflow-hidden"
+            style={{ zIndex: 999999 }} 
           >
-            <div className="flex justify-between items-center mb-10">
-              <div className="font-display font-bold text-xl text-primary tracking-widest uppercase">Menu</div>
+            <div className="flex justify-between items-center mb-10 pt-2">
+              <div className="font-display font-bold text-2xl text-primary tracking-tighter uppercase">Menu</div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-3 rounded-full bg-secondary border border-primary/10"
+                className="p-3 rounded-full bg-secondary border border-primary/10 active:scale-95 transition-transform"
               >
                 <X className="h-6 w-6 text-primary" />
               </button>
             </div>
 
-            <nav className="flex flex-col gap-4">
+            <nav className="flex flex-col gap-3">
               {menuItems.map((item, i) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.1 }}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.05 }}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between p-6 rounded-3xl bg-secondary hover:bg-primary/10 transition-all border border-white/5 shadow-sm"
+                  className="flex items-center justify-between p-6 rounded-[2rem] bg-secondary/80 border border-primary/5 active:scale-[0.97] transition-all"
                 >
-                  <span className="text-xl font-bold">{item.name}</span>
-                  <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
+                  <span className="text-xl font-bold tracking-tight">{item.name}</span>
+                  <div className="p-3 rounded-2xl bg-primary/10 text-primary shadow-inner">
                     {item.icon}
                   </div>
                 </motion.a>
               ))}
             </nav>
 
-            <div className="mt-auto grid grid-cols-2 gap-4 pt-8 border-t border-primary/10">
+            <div className="mt-auto grid grid-cols-2 gap-4 pb-8 border-t border-primary/10 pt-8">
                <button 
                  onClick={toggleTheme} 
-                 className="flex items-center justify-center gap-3 p-5 rounded-2xl bg-secondary font-bold text-sm border border-primary/5"
+                 className="flex flex-col items-center justify-center gap-2 p-5 rounded-3xl bg-secondary border border-primary/5 active:scale-95 transition-all"
                >
-                  {theme === "light" ? <Moon size={22} className="text-primary" /> : <Sun size={22} className="text-yellow-400" />}
-                  {theme === "light" ? "Dark" : "Light"}
+                  {theme === "light" ? <Moon size={24} className="text-primary" /> : <Sun size={24} className="text-yellow-400" />}
+                  <span className="text-xs font-bold uppercase">{theme === "light" ? "Dark" : "Light"}</span>
                </button>
-               <div className="flex items-center justify-center gap-3 p-5 rounded-2xl bg-secondary font-bold text-sm border border-primary/5 uppercase">
-                  <Globe size={22} className="text-primary" />
-                  {lang}
-               </div>
+               
+               <button 
+                 onClick={handleLangToggle}
+                 className="flex flex-col items-center justify-center gap-2 p-5 rounded-3xl bg-secondary border border-primary/5 active:scale-95 transition-all"
+               >
+                  <Globe size={24} className="text-primary" />
+                  <span className="text-xs font-bold uppercase">{lang}</span>
+               </button>
             </div>
-            
-            <div className="mt-6 text-center">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.5em] opacity-40">Lalla Khadija Labs</p>
+
+            <div className="pb-4 text-center">
+              <div className="h-1 w-12 bg-primary/20 rounded-full mx-auto mb-4" />
+              <p className="text-[9px] text-muted-foreground uppercase tracking-[0.5em] font-medium opacity-50">Lalla Khadija Labs</p>
             </div>
           </motion.div>
         )}

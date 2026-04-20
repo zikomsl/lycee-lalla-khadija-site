@@ -6,10 +6,6 @@ import { useApp } from "@/contexts/AppContext";
 import { useFocus } from "@/contexts/FocusContext";
 import { MathUtils, PerspectiveCamera as ThreePerspectiveCamera } from "three";
 
-/**
- * Cinematic camera: smoothly side-orbits ~30° + dolly when a card is focused.
- * Returns to neutral on close.
- */
 const CinematicCamera = () => {
   const camRef = useRef<ThreePerspectiveCamera>(null);
   const { active } = useFocus();
@@ -19,7 +15,6 @@ const CinematicCamera = () => {
     if (!cam) return;
     const focused = !!active;
 
-    // Targets
     const targetX = focused ? 2.3 : 0;
     const targetY = focused ? 0.6 : 0.4;
     const targetZ = focused ? 3.6 : 4.5;

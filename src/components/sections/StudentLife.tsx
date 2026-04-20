@@ -13,7 +13,7 @@ interface Scene {
   img: string;
   key: string;
   index: string;
-  depth: number; // -1 back, 0 mid, 1 front
+  depth: number;
   offsetY: number;
 }
 
@@ -24,9 +24,6 @@ const scenes: Scene[] = [
   { img: infirmerie, key: "infirmerie", index: "04", depth: 0, offsetY: 90 },
 ];
 
-/* ──────────────────────────────────────────────────────────
-   LifeCard — magnetic tilt + Ken Burns + depth-of-field
-   ────────────────────────────────────────────────────────── */
 const LifeCard = ({ scene, i, hovered, setHovered }: {
   scene: Scene;
   i: number;
@@ -69,7 +66,6 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
     });
   };
 
-  // Depth-of-field: cards lose focus when another is hovered
   const isFocused = hovered === null || hovered === i;
   const baseZ = scene.depth * 80;
 
@@ -90,7 +86,6 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
       }}
       style={{
         transformStyle: "preserve-3d",
-        // Hovered card jumps to the absolute top layer to win all hit tests
         zIndex: hovered === i ? 999 : 1,
       }}
       className="relative"
@@ -111,17 +106,14 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
           y: ty,
           transformStyle: "preserve-3d",
           transformPerspective: 1200,
-          // Card surface owns the click; explicit auto guards against parent overrides
           pointerEvents: "auto",
         }}
         className={cn(
           "group relative aspect-[4/5] w-full overflow-hidden rounded-[2rem]",
           "will-change-transform cursor-pointer transition-shadow duration-300",
-          // Intense glow ring on hover confirms the active, clickable target
           "hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.6),0_30px_80px_-10px_hsl(var(--primary)/0.55),0_0_120px_hsl(var(--primary)/0.35)]"
         )}
       >
-        {/* Glass shell — ultra-thin border + inner glow */}
         <div
           className="absolute inset-0 rounded-[2rem] z-30 pointer-events-none"
           style={{
@@ -131,7 +123,6 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
           }}
         />
 
-        {/* Ken Burns image */}
         <motion.img
           src={scene.img}
           alt={t(scene.key)}
@@ -146,65 +137,58 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Cinematic gradient veil */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/10" />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
 
-        {/* Glass tint */}
         <div
-          className="absolute inset-0 backdrop-blur-[2px] group-hover:backdrop-blur-0 transition-all duration-700"
-          style={{ background: "hsla(var(--glass-bg))" }}
+          className="absolute inset-0 backdrop-blur-[2px] group-hover:backdrop-blur-0 transition-all duration-700 z-10"
+          style={{ background: "rgba(0,0,0,0.1)" }}
         />
 
-        {/* Cursor-follow glow */}
         <motion.div
           aria-hidden
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10"
           style={{
             background: useTransform(
               [glowX, glowY] as any,
               ([gx, gy]: any) =>
-                `radial-gradient(500px circle at ${gx} ${gy}, hsl(var(--primary) / 0.35), transparent 55%)`
+                `radial-gradient(500px circle at ${gx} ${gy}, rgba(255,255,255,0.15), transparent 55%)`
             ),
           }}
         />
 
-        {/* Top label — wide mono */}
         <div
           className="absolute top-6 left-6 right-6 flex items-center justify-between z-20"
           style={{ transform: "translateZ(60px)" }}
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-primary/90 font-semibold">
+          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/90 font-semibold drop-shadow-md">
             {scene.index} — {t(scene.key).toUpperCase()}
           </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary))] animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] animate-pulse" />
         </div>
 
-        {/* Bottom content */}
         <div
           className="absolute inset-x-0 bottom-0 p-8 z-20"
           style={{ transform: "translateZ(80px)" }}
         >
-          <div className="font-mono text-[9px] uppercase tracking-[0.5em] text-muted-foreground mb-3">
+          <div className="font-mono text-[9px] uppercase tracking-[0.5em] text-white/70 mb-3 drop-shadow-md">
             {t("life_scene")} · {scene.index}
           </div>
           <h3
-            className="font-display text-4xl md:text-5xl font-bold leading-[0.95] mb-4 text-grad"
+            className="font-display text-4xl md:text-5xl font-bold leading-[0.95] mb-4 text-white drop-shadow-lg"
             style={{ fontFamily: "'Space Grotesk', serif" }}
           >
             {t(scene.key)}
           </h3>
           <motion.p
-            className="text-sm text-muted-foreground/90 leading-relaxed max-w-[90%]"
+            className="text-sm text-white/80 leading-relaxed max-w-[90%] drop-shadow-md"
             initial={{ opacity: 0.7 }}
             whileHover={{ opacity: 1 }}
           >
             {t(`${scene.key}_desc`)}
           </motion.p>
 
-          {/* Animated underline */}
           <motion.div
-            className="mt-5 h-px bg-gradient-to-r from-primary via-accent to-transparent origin-left"
+            className="mt-5 h-px bg-gradient-to-r from-white via-white/50 to-transparent origin-left"
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
@@ -212,9 +196,8 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
           />
         </div>
 
-        {/* Floating index numeral — deep z */}
         <div
-          className="absolute -top-4 -right-2 text-[10rem] font-display font-black leading-none text-foreground/5 select-none pointer-events-none z-10"
+          className="absolute -top-4 -right-2 text-[10rem] font-display font-black leading-none text-white/10 select-none pointer-events-none z-10 drop-shadow-lg"
           style={{ transform: "translateZ(20px)" }}
         >
           {scene.index}
@@ -224,9 +207,6 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
   );
 };
 
-/* ──────────────────────────────────────────────────────────
-   StudentLife — Floating 3D Stack
-   ────────────────────────────────────────────────────────── */
 export const StudentLife = () => {
   const { t } = useApp();
   const [hovered, setHovered] = useState<number | null>(null);
@@ -244,7 +224,6 @@ export const StudentLife = () => {
       className="relative py-40 overflow-hidden"
       style={{ perspective: "2000px" }}
     >
-      {/* Atmospheric backdrop */}
       <motion.div
         style={{ y: parallaxY }}
         className="absolute top-1/3 -left-40 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
@@ -258,11 +237,9 @@ export const StudentLife = () => {
         <div className="h-full w-full rounded-full bg-gradient-to-tl from-accent to-primary" />
       </motion.div>
 
-      {/* Subtle grid */}
       <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
       <div className="container relative z-10">
-        {/* Header */}
         <div className="max-w-3xl mb-24">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -289,7 +266,6 @@ export const StudentLife = () => {
           </motion.p>
         </div>
 
-        {/* Floating 3D Stack */}
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12"
           style={{ perspective: "1800px", transformStyle: "preserve-3d" }}
@@ -306,7 +282,6 @@ export const StudentLife = () => {
           ))}
         </div>
 
-        {/* Footer accent line */}
         <motion.div
           initial={{ scaleX: 0, opacity: 0 }}
           whileInView={{ scaleX: 1, opacity: 1 }}
