@@ -9,6 +9,7 @@ import sports from "@/assets/sport.jpg";
 
 export const Facilities = () => {
   const { t } = useApp();
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const items = [
     { img: aiLab, key: "ai_lab", tag: "BTS AI", num: "01" },
@@ -21,23 +22,27 @@ export const Facilities = () => {
       <div className="container">
         <div className="max-w-2xl mb-16">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-4"
           >
             02 — {t("nav_facilities")}
           </motion.div>
-          <StaggerText
-            as="h2"
-            text={t("facilities_title")}
-            className="font-display font-bold text-4xl md:text-6xl text-grad mb-4"
-          />
+          {isMobile ? (
+            <h2 className="font-display font-bold text-4xl text-grad mb-4">{t("facilities_title")}</h2>
+          ) : (
+            <StaggerText
+              as="h2"
+              text={t("facilities_title")}
+              className="font-display font-bold text-4xl md:text-6xl text-grad mb-4"
+            />
+          )}
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: isMobile ? 0.1 : 0.4 }}
             className="text-muted-foreground text-lg"
           >
             {t("facilities_sub")}
@@ -48,12 +53,11 @@ export const Facilities = () => {
           {items.map((it, i) => (
             <motion.div
               key={it.key}
-              initial={{ opacity: 0, y: 60 }}
+              initial={{ opacity: 0, y: isMobile ? 20 : 60 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: i * 0.1, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
-              className="relative hover:z-[999] focus-within:z-[999]"
-              style={{ pointerEvents: "auto" }}
+              transition={{ delay: i * 0.1, duration: isMobile ? 0.4 : 0.7 }}
+              className="relative"
             >
               <FocusableCard
                 id={`facility-${it.key}`}
