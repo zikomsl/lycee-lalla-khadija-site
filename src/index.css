@@ -93,13 +93,6 @@
     background-attachment: fixed;
     overflow-x: hidden;
   }
-
-  @media (max-width: 767px) {
-    body {
-      background-attachment: scroll !important;
-    }
-  }
-
   h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
 
   [dir="rtl"],
@@ -199,7 +192,7 @@
       linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
     background-size: 60px 60px;
     -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-    mask-image: radial-gradient(ellipse at center, black 30% , transparent 75%);
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   }
 }
 
@@ -207,20 +200,6 @@
   .perspective-1000 { perspective: 1000px; }
   .preserve-3d { transform-style: preserve-3d; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
-
-  @media (max-width: 767px) {
-    .glass, .glass-strong, [class*="shadow-"], .glow-ring, .tilt-card {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      box-shadow: none !important;
-      transform: none !important;
-      transition: none !important;
-    }
-    * {
-      animation: none !important;
-      transition-duration: 0s !important;
-    }
-  }
 }
 
 @keyframes pulse-ring {
