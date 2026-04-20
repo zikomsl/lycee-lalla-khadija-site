@@ -1,4 +1,3 @@
-// src/components/MobileNav.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, BookOpen, Layers, Phone, Globe, Moon, Sun } from 'lucide-react';
@@ -9,22 +8,25 @@ export const MobileNav = () => {
   const { theme, toggleTheme, lang, t } = useApp();
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'unset';
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
   }, [isOpen]);
 
   const menuItems = [
-    { name: t("nav_branches"), icon: <Layers size={22} />, href: '#branches' },
-    { name: t("nav_facilities"), icon: <BookOpen size={22} />, href: '#facilities' },
-    { name: t("nav_life"), icon: <Home size={22} />, href: '#life' },
-    { name: t("nav_contact"), icon: <Phone size={22} />, href: '#contact' },
+    { name: t("nav_branches"), icon: <Layers size={24} />, href: '#branches' },
+    { name: t("nav_facilities"), icon: <BookOpen size={24} />, href: '#facilities' },
+    { name: t("nav_life"), icon: <Home size={24} />, href: '#life' },
+    { name: t("nav_contact"), icon: <Phone size={24} />, href: '#contact' },
   ];
 
   return (
     <div className="lg:hidden">
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 shadow-inner active:scale-90 transition-transform"
+        className="p-2.5 rounded-xl bg-secondary border border-primary/10 shadow-sm active:scale-90 transition-transform"
       >
         <Menu className="h-5 w-5 text-primary" />
       </button>
@@ -32,51 +34,58 @@ export const MobileNav = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[999] bg-background/98 backdrop-blur-2xl flex flex-col p-6 shadow-2xl"
+            className="fixed inset-0 z-[10000] bg-background flex flex-col p-6 h-screen w-screen overflow-hidden"
           >
             <div className="flex justify-between items-center mb-10">
-              <div className="font-display font-bold text-lg text-grad-primary uppercase tracking-widest">Navigation</div>
+              <div className="font-display font-bold text-xl text-primary tracking-widest uppercase">Menu</div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-3 rounded-full bg-secondary/50 border border-white/10 active:rotate-90 transition-transform"
+                className="p-3 rounded-full bg-secondary border border-primary/10"
               >
                 <X className="h-6 w-6 text-primary" />
               </button>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <nav className="flex flex-col gap-4">
               {menuItems.map((item, i) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
-                  initial={{ x: 50, opacity: 0 }}
+                  initial={{ x: 20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: i * 0.1 }}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between p-5 rounded-2xl glass hover:bg-primary/10 transition-all border border-white/5 active:scale-[0.98]"
+                  className="flex items-center justify-between p-6 rounded-3xl bg-secondary hover:bg-primary/10 transition-all border border-white/5 shadow-sm"
                 >
-                  <span className="text-lg font-medium">{item.name}</span>
-                  <div className="p-2.5 rounded-xl bg-primary/10 text-primary">{item.icon}</div>
+                  <span className="text-xl font-bold">{item.name}</span>
+                  <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
+                    {item.icon}
+                  </div>
                 </motion.a>
               ))}
-            </div>
+            </nav>
 
-            <div className="mt-auto grid grid-cols-2 gap-4 pt-6 border-t border-white/10">
-               <button onClick={toggleTheme} className="flex items-center justify-center gap-2 p-4 rounded-2xl glass-strong">
-                  {theme === "light" ? <Moon size={20} /> : <Sun size={20} className="text-yellow-400" />}
-                  <span className="text-xs font-bold">{theme === "light" ? "Dark" : "Light"}</span>
+            <div className="mt-auto grid grid-cols-2 gap-4 pt-8 border-t border-primary/10">
+               <button 
+                 onClick={toggleTheme} 
+                 className="flex items-center justify-center gap-3 p-5 rounded-2xl bg-secondary font-bold text-sm border border-primary/5"
+               >
+                  {theme === "light" ? <Moon size={22} className="text-primary" /> : <Sun size={22} className="text-yellow-400" />}
+                  {theme === "light" ? "Dark" : "Light"}
                </button>
-               <div className="flex items-center justify-center gap-2 p-4 rounded-2xl glass-strong">
-                  <Globe size={20} className="text-primary" />
-                  <span className="text-xs font-bold uppercase">{lang}</span>
+               <div className="flex items-center justify-center gap-3 p-5 rounded-2xl bg-secondary font-bold text-sm border border-primary/5 uppercase">
+                  <Globe size={22} className="text-primary" />
+                  {lang}
                </div>
             </div>
             
-            <p className="text-center mt-6 text-[10px] text-muted-foreground uppercase tracking-[0.4em] opacity-50">Lalla Khadija Labs</p>
+            <div className="mt-6 text-center">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.5em] opacity-40">Lalla Khadija Labs</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
