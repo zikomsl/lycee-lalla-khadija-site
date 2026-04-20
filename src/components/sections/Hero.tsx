@@ -11,7 +11,7 @@ export const Hero = () => {
   const isFocused = !!active;
 
   return (
-    <section id="hero" className="relative min-h-[100svh] w-full overflow-hidden flex flex-col justify-center pt-24 pb-12">
+    <section id="hero" className="relative min-h-[100svh] w-full overflow-hidden flex flex-col justify-center pt-24 pb-32 md:pb-12">
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
       
       <div className="container relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center px-6 mx-auto">
@@ -71,15 +71,15 @@ export const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity z-20 cursor-pointer"
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity z-20 cursor-pointer"
         onClick={() => document.getElementById('branches')?.scrollIntoView({ behavior: 'smooth' })}
       >
-        <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Découvrir</span>
+        <span className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Découvrir</span>
         <motion.div
-          animate={{ y: [0, 5, 0] }}
+          animate={{ y: [0, 4, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         >
-          <ChevronDown className="w-4 h-4 text-primary" />
+          <ChevronDown className="w-3 h-3 text-primary" />
         </motion.div>
       </motion.div>
     </section>
