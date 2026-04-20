@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Globe, Menu, X } from "lucide-react";
+import { Sun, Moon, Globe } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
+import { MobileNav } from "./MobileNav"; // Import dيال المنيو الجديدة
 
 const langs: { code: "fr" | "ar" | "en"; label: string }[] = [
   { code: "fr", label: "FR" },
@@ -13,7 +14,6 @@ const langs: { code: "fr" | "ar" | "en"; label: string }[] = [
 
 export const Navbar = () => {
   const { theme, toggleTheme, lang, setLang, t } = useApp();
-  const [open, setOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
 
   const links = [
@@ -31,6 +31,7 @@ export const Navbar = () => {
       className="fixed top-4 inset-x-4 z-50 mx-auto max-w-6xl"
     >
       <div className="glass-strong rounded-2xl px-4 py-3 flex items-center justify-between gap-4">
+        {/* Logo Section */}
         <a href="#hero" className="flex items-center gap-2 group">
           <div className="relative h-10 w-10 grid place-items-center">
             <img src={logo} alt="Lalla Khadija logo" className="h-10 w-10 object-contain drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
@@ -41,6 +42,7 @@ export const Navbar = () => {
           </div>
         </a>
 
+        {/* 💻 هادي هي الـ Desktop Nav اللي كنتي كتقلب عليها */}
         <nav className="hidden md:flex items-center gap-1">
           {links.map((l) => (
             <a
@@ -55,7 +57,7 @@ export const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Language */}
+          {/* Language Switcher */}
           <div className="relative">
             <button
               onClick={() => setLangOpen((o) => !o)}
@@ -94,7 +96,7 @@ export const Navbar = () => {
             </AnimatePresence>
           </div>
 
-          {/* Theme */}
+          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
@@ -125,37 +127,10 @@ export const Navbar = () => {
             </AnimatePresence>
           </button>
 
-          <button
-            onClick={() => setOpen((o) => !o)}
-            className="md:hidden h-9 w-9 rounded-xl bg-secondary/50 grid place-items-center"
-            aria-label="Menu"
-          >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
+          {/* 📱 هادي هي الـ MobileNav الجديدة اللي غتبان غير في التيليفون */}
+          <MobileNav />
         </div>
       </div>
-
-      <AnimatePresence>
-        {open && (
-          <motion.nav
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-2 glass-strong rounded-2xl p-2 flex flex-col"
-          >
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="px-4 py-2.5 text-sm hover:bg-secondary rounded-xl"
-              >
-                {l.label}
-              </a>
-            ))}
-          </motion.nav>
-        )}
-      </AnimatePresence>
     </motion.header>
   );
 };
