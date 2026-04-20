@@ -47,6 +47,7 @@ export const MobileNav = () => {
             style={{ zIndex: 99999 }}
             dir={lang === 'ar' ? 'rtl' : 'ltr'}
           >
+            {/* Header - Fixed to top */}
             <div className="flex justify-between items-center mb-8 pt-4 shrink-0">
               <div className="flex items-center gap-2">
                 <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -64,52 +65,61 @@ export const MobileNav = () => {
               </button>
             </div>
 
-            <nav className="flex flex-col gap-3 mb-8">
+            {/* Nav Links - Will take space but allow scroll */}
+            <nav className="flex flex-col gap-4 mb-8">
               {menuItems.map((item, i) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
                   initial={{ x: 30, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.1 }}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between p-5 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-primary/5 active:scale-[0.98] transition-all group"
+                  className="flex items-center justify-between p-6 rounded-[2.5rem] bg-slate-50 dark:bg-white/5 border border-primary/5 active:scale-[0.96] transition-all group"
                 >
                   <span className="text-xl font-sans font-black tracking-tight text-slate-800 dark:text-slate-100">
                     {item.name}
                   </span>
-                  <div className="p-3 rounded-xl bg-white dark:bg-slate-800 text-primary shadow-sm">
+                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 text-primary shadow-sm group-active:shadow-inner transition-all">
                     {item.icon}
                   </div>
                 </motion.a>
               ))}
             </nav>
 
-            <div className="mt-auto pt-8 border-t border-primary/10 grid grid-cols-2 gap-4 shrink-0">
+            {/* Quick Actions - mt-auto ensures they go to the bottom if there's space */}
+            <div className="mt-auto pt-8 border-t border-primary/10 grid grid-cols-2 gap-4 pb-8 shrink-0">
                <button 
                  onClick={toggleTheme} 
-                 className="flex flex-col items-center justify-center gap-2 p-5 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-primary/5 active:scale-95 transition-all"
+                 className="flex flex-col items-center justify-center gap-3 p-6 rounded-[2.2rem] bg-slate-50 dark:bg-white/5 border border-primary/5 active:scale-95 transition-all"
                >
                   <div className="p-3 rounded-xl bg-white dark:bg-slate-800 shadow-sm">
-                    {theme === "light" ? <Moon size={20} className="text-primary" /> : <Sun size={20} className="text-yellow-400" />}
+                    {theme === "light" ? <Moon size={24} className="text-primary" /> : <Sun size={24} className="text-yellow-400" />}
                   </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest">{theme === "light" ? "Dark" : "Light"}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">
+                    {theme === "light" ? "Dark Mode" : "Light Mode"}
+                  </span>
                </button>
                
                <button 
                  onClick={handleLangToggle}
-                 className="flex flex-col items-center justify-center gap-2 p-5 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-primary/5 active:scale-95 transition-all"
+                 className="flex flex-col items-center justify-center gap-3 p-6 rounded-[2.2rem] bg-slate-50 dark:bg-white/5 border border-primary/5 active:scale-95 transition-all"
                >
                   <div className="p-3 rounded-xl bg-white dark:bg-slate-800 shadow-sm">
-                    <Globe size={20} className="text-primary" />
+                    <Globe size={24} className="text-primary" />
                   </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest">{lang === 'ar' ? 'العربية' : lang === 'fr' ? 'Français' : 'English'}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">
+                    {lang === 'ar' ? 'العربية' : lang === 'fr' ? 'Français' : 'English'}
+                  </span>
                </button>
             </div>
 
-            <div className="py-6 shrink-0">
-              <div className="h-1 w-8 bg-primary/20 rounded-full mx-auto mb-4" />
-              <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.4em] opacity-60">lt-lallakhadija.ma</p>
+            {/* Footer */}
+            <div className="pb-8 text-center shrink-0">
+              <div className="h-1.5 w-12 bg-primary/20 rounded-full mx-auto mb-6" />
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.4em] opacity-60">
+                lt-lallakhadija.ma
+              </p>
             </div>
           </motion.div>
         )}
