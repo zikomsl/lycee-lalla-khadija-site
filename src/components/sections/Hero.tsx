@@ -89,13 +89,14 @@ export const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* 3D Robot — must sit above CinematicOverlay (z-5/6) */}
+        {/* 3D Robot */}
         <div className="relative h-[500px] lg:h-[700px] order-first lg:order-last z-[7]">
           <HeroScene />
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 1 }}
+            animate={{ opacity: isFocused ? 0 : 1 }}
+            transition={{ delay: isFocused ? 0 : 0.8, duration: 1 }}
+            style={{ pointerEvents: isFocused ? "none" : "auto" }}
             className="absolute bottom-4 left-1/2 -translate-x-1/2 glass rounded-full px-4 py-2 text-xs font-medium flex items-center gap-2"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />

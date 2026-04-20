@@ -62,7 +62,7 @@ export const Facilities = () => {
                 label={it.tag}
                 index={it.num}
                 borderRadius={24}
-                className="block w-full"
+                className="block w-full focus:outline-none"
               >
                 <TiltCard className="group rounded-3xl overflow-hidden glass-strong cursor-pointer transition-shadow duration-300 hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.6),0_25px_70px_-10px_hsl(var(--primary)/0.5),0_0_100px_hsl(var(--primary)/0.3)]">
                   <div className="relative h-64 overflow-hidden">
