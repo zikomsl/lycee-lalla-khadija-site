@@ -8,15 +8,33 @@
     <meta name="author" content="Zakaria" />
     <link rel="icon" href="/favicon.ico" />
 
+    <style>
+      /* FORCE SANS-BLACK & KILL MOBILE LAG */
+      h1, h2, h3, h4, .font-black {
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        font-weight: 900 !important;
+      }
+
+      @media (max-width: 768px) {
+        * {
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          text-shadow: none !important;
+        }
+        .glass {
+          background: #ffffff !important;
+          backdrop-filter: none !important;
+        }
+        canvas {
+          display: none !important;
+        }
+      }
+    </style>
+
     <meta property="og:title" content="Lycée Technique Lalla Khadija" />
     <meta property="og:description" content="Site officiel du Lycée Technique Lalla Khadija" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/logo.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Lycée Technique Lalla Khadija" />
-    <meta name="twitter:description" content="Site officiel du Lycée Technique Lalla Khadija" />
-    <meta name="twitter:image" content="/logo.png" />
   </head>
 
   <body>
