@@ -32,7 +32,9 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
 }) => {
   const { t } = useApp();
   const { open, active } = useFocus();
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const ref = useRef<HTMLDivElement>(null);
+  
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
 
@@ -40,169 +42,80 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
   const rotY = useSpring(useTransform(mx, [-0.5, 0.5], [-15, 15]), { stiffness: 180, damping: 18 });
   const tx = useSpring(useTransform(mx, [-0.5, 0.5], [-12, 12]), { stiffness: 220, damping: 22 });
   const ty = useSpring(useTransform(my, [-0.5, 0.5], [-12, 12]), { stiffness: 220, damping: 22 });
-  const glowX = useTransform(mx, [-0.5, 0.5], ["0%", "100%"]);
-  const glowY = useTransform(my, [-0.5, 0.5], ["0%", "100%"]);
 
   const handleMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return;
     const r = ref.current!.getBoundingClientRect();
     mx.set((e.clientX - r.left) / r.width - 0.5);
     my.set((e.clientY - r.top) / r.height - 0.5);
   };
-  const handleLeave = () => { mx.set(0); my.set(0); setHovered(null); };
 
   const focusId = `life-${scene.key}`;
   const isActive = active?.id === focusId;
-
-  const handleClick = () => {
-    if (!ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    open({
-      id: focusId,
-      img: scene.img,
-      title: t(scene.key),
-      label: t(scene.key),
-      index: scene.index,
-      origin: { x: r.left, y: r.top, width: r.width, height: r.height, borderRadius: 32 },
-    });
-  };
-
   const isFocused = hovered === null || hovered === i;
-  const baseZ = scene.depth * 80;
+
+  const tiltStyles = isMobile ? {} : { rotateX: rotX, rotateY: rotY, x: tx, y: ty };
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 120, z: -400, rotateX: -25 }}
-      whileInView={{ opacity: 1, y: scene.offsetY, z: baseZ, rotateX: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{
-        delay: i * 0.18,
-        duration: 1.1,
-        ease: [0.16, 1.2, 0.3, 1],
-      }}
+      initial={{ opacity: 0, y: isMobile ? 20 : 120 }}
+      whileInView={{ opacity: 1, y: isMobile ? 0 : scene.offsetY }}
+      viewport={{ once: true, amount: 0.1 }}
       animate={{
-        filter: isFocused ? "blur(0px) saturate(1)" : "blur(6px) saturate(0.7)",
-        opacity: isActive ? 0 : isFocused ? 1 : 0.45,
+        filter: isMobile ? "none" : (isFocused ? "blur(0px) saturate(1)" : "blur(6px) saturate(0.7)"),
+        opacity: isActive ? 0 : (isFocused ? 1 : 0.45),
         scale: isFocused ? 1 : 0.96,
-      }}
-      style={{
-        transformStyle: "preserve-3d",
-        zIndex: hovered === i ? 999 : 1,
       }}
       className="relative"
     >
-      <motion.div
+      <div
         ref={ref}
         onMouseMove={handleMove}
-        onMouseEnter={() => setHovered(i)}
-        onMouseLeave={handleLeave}
-        onClick={handleClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleClick()}
+        onMouseEnter={() => !isMobile && setHovered(i)}
+        onMouseLeave={() => { mx.set(0); my.set(0); setHovered(null); }}
+        onClick={() => {
+          const r = ref.current!.getBoundingClientRect();
+          open({
+            id: focusId,
+            img: scene.img,
+            title: t(scene.key),
+            label: t(scene.key),
+            index: scene.index,
+            origin: { x: r.left, y: r.top, width: r.width, height: r.height, borderRadius: 32 },
+          });
+        }}
         style={{
-          rotateX: rotX,
-          rotateY: rotY,
-          x: tx,
-          y: ty,
-          transformStyle: "preserve-3d",
-          transformPerspective: 1200,
+          ...tiltStyles,
+          transformStyle: isMobile ? "flat" : "preserve-3d",
           pointerEvents: "auto",
         }}
         className={cn(
-          "group relative aspect-[4/5] w-full overflow-hidden rounded-[2rem]",
-          "will-change-transform cursor-pointer transition-shadow duration-300",
-          "hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.6),0_30px_80px_-10px_hsl(var(--primary)/0.55),0_0_120px_hsl(var(--primary)/0.35)]"
+          "group relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] cursor-pointer",
+          !isMobile && "hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.6),0_30px_80px_-10px_hsl(var(--primary)/0.55)]"
         )}
       >
-        <div
-          className="absolute inset-0 rounded-[2rem] z-30 pointer-events-none"
-          style={{
-            border: "0.5px solid hsl(var(--border) / 0.5)",
-            boxShadow:
-              "inset 0 1px 0 hsl(var(--foreground) / 0.08), inset 0 0 60px hsl(var(--primary) / 0.06), 0 30px 80px -20px hsl(var(--primary) / 0.25)",
-          }}
-        />
-
-        <motion.img
-          src={scene.img}
-          alt={t(scene.key)}
-          loading="lazy"
+        <motion.img 
+          src={scene.img} 
+          alt={t(scene.key)} 
           className="absolute inset-0 h-full w-full object-cover"
-          initial={{ scale: 1.15, x: -10, y: -10 }}
-          animate={{
+          animate={isMobile ? { scale: 1, x: 0, y: 0 } : {
             scale: [1.15, 1.25, 1.15],
             x: [-10, 10, -10],
             y: [-10, 5, -10],
           }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          transition={isMobile ? { duration: 0 } : { duration: 18, repeat: Infinity, ease: "easeInOut" }}
         />
-
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
-
-        <div
-          className="absolute inset-0 backdrop-blur-[2px] group-hover:backdrop-blur-0 transition-all duration-700 z-10"
-          style={{ background: "rgba(0,0,0,0.1)" }}
-        />
-
-        <motion.div
-          aria-hidden
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10"
-          style={{
-            background: useTransform(
-              [glowX, glowY] as any,
-              ([gx, gy]: any) =>
-                `radial-gradient(500px circle at ${gx} ${gy}, rgba(255,255,255,0.15), transparent 55%)`
-            ),
-          }}
-        />
-
-        <div
-          className="absolute top-6 left-6 right-6 flex items-center justify-between z-20"
-          style={{ transform: "translateZ(60px)" }}
-        >
-          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/90 font-semibold drop-shadow-md">
-            {scene.index} — {t(scene.key).toUpperCase()}
-          </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] animate-pulse" />
+        
+        <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-20">
+          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/90 font-semibold">{scene.index} — {t(scene.key).toUpperCase()}</span>
         </div>
 
-        <div
-          className="absolute inset-x-0 bottom-0 p-8 z-20"
-          style={{ transform: "translateZ(80px)" }}
-        >
-          <div className="font-mono text-[9px] uppercase tracking-[0.5em] text-white/70 mb-3 drop-shadow-md">
-            {t("life_scene")} · {scene.index}
-          </div>
-          <h3
-            className="font-display text-4xl md:text-5xl font-bold leading-[0.95] mb-4 text-white drop-shadow-lg"
-            style={{ fontFamily: "'Space Grotesk', serif" }}
-          >
-            {t(scene.key)}
-          </h3>
-          <motion.p
-            className="text-sm text-white/80 leading-relaxed max-w-[90%] drop-shadow-md"
-            initial={{ opacity: 0.7 }}
-            whileHover={{ opacity: 1 }}
-          >
-            {t(`${scene.key}_desc`)}
-          </motion.p>
-
-          <motion.div
-            className="mt-5 h-px bg-gradient-to-r from-white via-white/50 to-transparent origin-left"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.18 + 0.6, duration: 1.2, ease: [0.7, 0, 0.3, 1] }}
-          />
+        <div className="absolute inset-x-0 bottom-0 p-8 z-20 text-start">
+          <h3 className="font-display text-3xl font-bold text-white mb-2">{t(scene.key)}</h3>
+          <p className="text-xs text-white/80 leading-relaxed line-clamp-3">{t(`${scene.key}_desc`)}</p>
         </div>
-
-        <div
-          className="absolute -top-4 -right-2 text-[10rem] font-display font-black leading-none text-white/10 select-none pointer-events-none z-10 drop-shadow-lg"
-          style={{ transform: "translateZ(20px)" }}
-        >
-          {scene.index}
-        </div>
-      </motion.div>
+      </div>
     </motion.article>
   );
 };
@@ -210,85 +123,39 @@ const LifeCard = ({ scene, i, hovered, setHovered }: {
 export const StudentLife = () => {
   const { t } = useApp();
   const [hovered, setHovered] = useState<number | null>(null);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [80, -80]);
 
   return (
-    <section
-      ref={sectionRef}
-      id="life"
-      className="relative py-40 overflow-hidden"
-      style={{ perspective: "2000px" }}
-    >
-      <motion.div
-        style={{ y: parallaxY }}
-        className="absolute top-1/3 -left-40 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
-      >
-        <div className="h-full w-full rounded-full bg-gradient-to-br from-primary to-accent" />
-      </motion.div>
-      <motion.div
-        style={{ y: useTransform(scrollYProgress, [0, 1], [-80, 80]) }}
-        className="absolute bottom-1/4 -right-40 h-[400px] w-[400px] rounded-full opacity-15 blur-[100px]"
-      >
-        <div className="h-full w-full rounded-full bg-gradient-to-tl from-accent to-primary" />
-      </motion.div>
-
-      <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-
+    <section id="life" ref={sectionRef} className="relative py-24 md:py-40 overflow-hidden">
+      {!isMobile && (
+        <>
+          <motion.div style={{ y: parallaxY }} className="absolute top-1/3 -left-40 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px] bg-primary" />
+          <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
+        </>
+      )}
+      
       <div className="container relative z-10">
-        <div className="max-w-3xl mb-24">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="font-mono text-[11px] uppercase tracking-[0.5em] text-primary font-semibold mb-6 flex items-center gap-3"
-          >
-            <span className="h-px w-12 bg-primary" />
-            03 — {t("nav_life")}
-          </motion.div>
-          <StaggerText
-            as="h2"
-            text={t("life_title")}
-            className="font-display font-bold text-5xl md:text-7xl lg:text-8xl text-grad mb-6 leading-[0.9]"
-          />
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="text-muted-foreground text-lg md:text-xl max-w-xl leading-relaxed"
-          >
-            {t("life_sub")}
-          </motion.p>
+        <div className="max-w-3xl mb-16 md:mb-24 text-start">
+          <div className="font-mono text-[11px] uppercase tracking-[0.5em] text-primary font-semibold mb-6 flex items-center gap-3">
+            <span className="h-px w-12 bg-primary" /> 03 — {t("nav_life")}
+          </div>
+          {isMobile ? (
+             <h2 className="font-display font-bold text-4xl text-grad">{t("life_title")}</h2>
+          ) : (
+            <StaggerText as="h2" text={t("life_title")} className="font-display font-bold text-5xl md:text-7xl lg:text-8xl text-grad mb-6 leading-[0.9]" />
+          )}
         </div>
-
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12"
-          style={{ perspective: "1800px", transformStyle: "preserve-3d" }}
-          onMouseLeave={() => setHovered(null)}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10" onMouseLeave={() => setHovered(null)}>
           {scenes.map((scene, i) => (
-            <LifeCard
-              key={scene.key}
-              scene={scene}
-              i={i}
-              hovered={hovered}
-              setHovered={setHovered}
-            />
+            <LifeCard key={scene.key} scene={scene} i={i} hovered={hovered} setHovered={setHovered} />
           ))}
         </div>
-
-        <motion.div
-          initial={{ scaleX: 0, opacity: 0 }}
-          whileInView={{ scaleX: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8, duration: 1.4, ease: [0.7, 0, 0.3, 1] }}
-          className="mt-32 h-px origin-left bg-gradient-to-r from-transparent via-primary/40 to-transparent"
-        />
       </div>
     </section>
   );
