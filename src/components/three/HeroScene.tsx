@@ -1,5 +1,5 @@
 import { Suspense, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, ContactShadows, PerspectiveCamera } from "@react-three/drei";
 import { Robot } from "./Robot";
 import { useApp } from "@/contexts/AppContext";
@@ -9,15 +9,18 @@ import { MathUtils, PerspectiveCamera as ThreePerspectiveCamera } from "three";
 const CinematicCamera = () => {
   const camRef = useRef<ThreePerspectiveCamera>(null);
   const { active } = useFocus();
+  const { viewport } = useThree();
+  const isMobile = viewport.width < 5; // كنشوفو واش الشاشة صغيرة وسط الـ 3D
 
   useFrame((_, delta) => {
     const cam = camRef.current;
     if (!cam) return;
     const focused = !!active;
 
+    // ف التيليفون (isMobile) كنرجعو الكاميرا لور (Z: 6) باش الروبوت يشد الوسط ناضي
     const targetX = focused ? 2.3 : 0;
-    const targetY = focused ? 0.6 : 0.4;
-    const targetZ = focused ? 3.6 : 4.5;
+    const targetY = focused ? 0.6 : (isMobile ? 0.2 : 0.4);
+    const targetZ = focused ? 3.6 : (isMobile ? 6 : 4.5); 
     const targetRotY = focused ? -0.45 : 0;
 
     cam.position.x = MathUtils.damp(cam.position.x, targetX, 2.2, delta);
@@ -27,7 +30,7 @@ const CinematicCamera = () => {
     cam.lookAt(0, focused ? 0.2 : 0.1, 0);
   });
 
-  return <PerspectiveCamera ref={camRef} makeDefault position={[0, 0.4, 4.5]} fov={42} />;
+  return <PerspectiveCamera ref={camRef} makeDefault fov={isMobile ? 50 : 42} />;
 };
 
 export const HeroScene = () => {
@@ -37,9 +40,9 @@ export const HeroScene = () => {
   return (
     <Canvas
       shadows
-      dpr={[1, 1.75]}
+      dpr={[1, 1.5]} // نقصنا شوية باش يخدم خفيف ف التيليفون
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      className="!absolute inset-0"
+      className="w-full h-full"
     >
       <CinematicCamera />
       <Suspense fallback={null}>
@@ -49,20 +52,14 @@ export const HeroScene = () => {
           intensity={isDark ? 0.8 : 1.4}
           color={isDark ? "#67e8f9" : "#ffffff"}
           castShadow
-          shadow-mapSize={[1024, 1024]}
         />
-        <directionalLight position={[-4, 2, -3]} intensity={isDark ? 0.6 : 0.4} color={isDark ? "#3b82f6" : "#cbd5e1"} />
-        <pointLight position={[0, 1, 2]} intensity={isDark ? 1.2 : 0.5} color={isDark ? "#22d3ee" : "#60a5fa"} />
-
         <Robot />
-
         <ContactShadows
           position={[0, -1.25, 0]}
           opacity={isDark ? 0.5 : 0.3}
           scale={8}
           blur={2.4}
           far={3}
-          color={isDark ? "#000000" : "#1e293b"}
         />
         <Environment preset={isDark ? "night" : "studio"} />
       </Suspense>
