@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, ChevronDown } from "lucide-react";
 import { HeroScene } from "../three/HeroScene";
@@ -10,14 +9,6 @@ export const Hero = () => {
   const { t } = useApp();
   const { active } = useFocus();
   const isFocused = !!active;
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   return (
     <section id="hero" className="relative min-h-[100svh] w-full overflow-hidden flex flex-col justify-center pt-24 pb-12 bg-white dark:bg-slate-950">
@@ -60,11 +51,9 @@ export const Hero = () => {
 
         <div className="w-full flex flex-col items-center justify-center overflow-visible z-10 mt-4 md:mt-0">
           <div className="relative w-[280px] h-[280px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] flex items-center justify-center" dir="ltr">
-            {!isMobile && (
-              <div className="w-full h-full max-md:scale-[1.6] max-md:-translate-x-24 origin-center">
-                <HeroScene />
-              </div>
-            )}
+            <div className="w-full h-full max-md:scale-[1.6] max-md:-translate-x-24 origin-center">
+              <HeroScene />
+            </div>
           </div>
           
           <motion.div
