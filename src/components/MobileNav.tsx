@@ -1,71 +1,85 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, BookOpen, Layers, Phone } from 'lucide-react';
+import { Menu, X, Sun, Moon, Globe } from 'lucide-react';
+import { useApp } from "@/contexts/AppContext";
+import { cn } from "@/lib/utils";
 
 export const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, toggleTheme, lang, setLang, t } = useApp();
 
-  const menuItems = [
-    { name: 'الرئيسية', icon: <Home size={20} />, href: '#' },
-    { name: 'الشعب', icon: <Layers size={20} />, href: '#branches' },
-    { name: 'المرافق', icon: <BookOpen size={20} />, href: '#facilities' },
-    { name: 'تواصل', icon: <Phone size={20} />, href: '#contact' },
+  const links = [
+    { href: "#branches", label: t("nav_branches") },
+    { href: "#facilities", label: t("nav_facilities") },
+    { href: "#life", label: t("nav_life") },
+    { href: "#contact", label: t("nav_contact") },
   ];
 
   return (
-    <div className="lg:hidden fixed top-4 right-4 z-[100]">
-      {/* Button Menu - Glassmorphism */}
+    <div className="md:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-3 rounded-2xl glass-strong border border-white/20 shadow-xl active:scale-90 transition-transform"
+        className="p-2 rounded-xl bg-primary/10 border border-primary/20 text-primary active:scale-90 transition-transform"
       >
-        {isOpen ? <X className="text-primary" /> : <Menu className="text-primary" />}
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Background Blur Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-background/40 backdrop-blur-md -z-10"
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]" 
             />
-
-            {/* Menu Content */}
             <motion.div
-              initial={{ x: '100%', opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: '100%', opacity: 0 }}
+              initial={{ x: '100%' }} 
+              animate={{ x: 0 }} 
+              exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-screen w-[75%] glass-strong border-l border-white/10 p-8 pt-24 shadow-2xl"
+              className="fixed top-0 right-0 h-full w-[80%] bg-background border-l border-white/5 p-6 z-[101] flex flex-col shadow-2xl"
             >
-              <div className="flex flex-col gap-6">
-                {menuItems.map((item, i) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: i * 0.1 }}
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-4 p-4 rounded-2xl hover:bg-primary/10 transition-colors group"
+              <div className="flex justify-between items-center mb-10">
+                <span className="font-display font-bold text-lg text-grad-primary">Menu</span>
+                <button onClick={() => setIsOpen(false)} className="p-2 rounded-lg bg-secondary">
+                  <X size={20}/>
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4 mb-auto">
+                {links.map((link) => (
+                  <a 
+                    key={link.href} 
+                    href={link.href} 
+                    onClick={() => setIsOpen(false)} 
+                    className="text-2xl font-display font-semibold border-b border-white/5 pb-4 hover:text-primary transition-colors"
                   >
-                    <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                      {item.icon}
-                    </div>
-                    <span className="text-lg font-medium">{item.name}</span>
-                  </motion.a>
+                    {link.label}
+                  </a>
                 ))}
               </div>
 
-              {/* Bottom Decoration */}
-              <div className="absolute bottom-12 left-8 right-8">
-                <div className="p-6 rounded-3xl bg-grad-primary/10 border border-primary/20 text-center">
-                  <p className="text-xs text-muted-foreground mb-2">ثانوية للا خديجة</p>
-                  <p className="text-sm font-bold text-grad-primary">مستقبل التقنية يبدأ هنا</p>
+              <div className="mt-auto pt-6 flex flex-col gap-4">
+                <div className="flex justify-between items-center bg-secondary/50 p-4 rounded-2xl">
+                  <span className="text-sm font-medium">Mode {theme === 'light' ? 'Nuit' : 'Jour'}</span>
+                  <button onClick={toggleTheme} className="p-2 rounded-xl bg-background shadow-sm active:scale-90 transition-transform">
+                    {theme === 'light' ? <Moon size={18}/> : <Sun size={18}/>}
+                  </button>
+                </div>
+                
+                <div className="flex gap-2">
+                  {['fr', 'ar', 'en'].map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => setLang(l as any)}
+                      className={cn("flex-1 py-3 rounded-xl text-xs font-bold transition-all active:scale-95", 
+                        lang === l ? "bg-grad-primary text-white" : "bg-secondary text-muted-foreground")}
+                    >
+                      {l.toUpperCase()}
+                    </button>
+                  ))}
                 </div>
               </div>
             </motion.div>
